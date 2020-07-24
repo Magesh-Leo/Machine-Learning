@@ -1,0 +1,369 @@
+get_ipython().run_line_magic('matplotlib', 'inline')
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_digits
+
+
+# In[4]:
+
+
+digits = load_digits()
+dir(digits)
+
+
+# In[13]:
+
+
+digits.images[1]
+
+
+# In[24]:
+
+
+plt.gray()
+plt.matshow(digits.images[0])
+
+
+# In[28]:
+
+
+digits.target[0:12]
+
+
+# In[54]:
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(digits.data,digits.target,test_size=0.2)
+
+
+# In[35]:
+
+
+print(len(X_train))
+print(len(X_test))
+
+
+# In[55]:
+
+
+from sklearn.linear_model import LogisticRegression
+model=LogisticRegression()
+
+
+# In[56]:
+
+
+model.fit(X_train, y_train)
+
+
+# In[57]:
+
+
+model.score(X_test,y_test)
+
+
+# In[68]:
+
+
+model.predict([digits.data[4]])
+
+
+# # Confusion Matrix
+
+# In[72]:
+
+
+from sklearn.metrics import confusion_matrix
+
+cm=confusion_matrix(y_test,model.predict(X_test))
+cm
+
+
+# In[96]:
+
+
+import seaborn as sns
+plt.figure(figsize=(10,7))
+sns.heatmap(cm,annot_kws={'size':16},annot=True)
+plt.xlabel('Predicted')
+plt.ylabel('Truth')
+#annot : bool or rectangular dataset, optional 
+#   If True, write the data value in each cell. If an array-like with the
+#   same shape as ``data``, then use this to annotate the heatmap instead
+#   of the raw data.
+
+
+# # IRIS DATASET
+
+# In[97]:
+
+
+from sklearn.datasets import load_iris
+
+
+# In[101]:
+
+
+data=load_iris()
+dir(data)
+
+
+# In[116]:
+
+
+data.target[[49,50,100]]
+
+
+# In[118]:
+
+
+list(data.target_names)
+
+
+# In[122]:
+
+
+data.data[0:5]
+
+
+# In[123]:
+
+
+list(data.feature_names)
+
+
+# In[124]:
+
+
+data.DESCR
+
+
+# In[152]:
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(data.data,data.target,test_size=0.25)
+
+
+# In[153]:
+
+
+print(len(X_test))
+print(len(X_train))
+
+
+# In[156]:
+
+
+from sklearn.linear_model import LogisticRegression
+lgre=LogisticRegression()
+
+
+# In[157]:
+
+
+lgre.fit(X_train,y_train)
+
+
+# In[158]:
+
+
+lgre.predict(X_test)
+
+
+# In[159]:
+
+
+lgre.score(X_test,y_test)
+
+
+# In[169]:
+
+
+lgre.predict([data.data[140]])
+
+
+# # LIFE INSURANCE
+
+# In[9]:
+
+
+df=pd.read_csv("life_insurance.csv")
+df.head()
+
+
+# In[11]:
+
+
+plt.scatter(df.age,df.have_insurance,c='r',marker='*')
+plt.show()
+
+
+# In[17]:
+
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,Y_train,Y_test=train_test_split(df[['age']],df.have_insurance,test_size=0.2)
+
+
+# In[18]:
+
+
+len(X_train)
+
+
+# In[19]:
+
+
+from sklearn.linear_model import LogisticRegression
+model=LogisticRegression()
+
+
+# In[20]:
+
+
+model.fit(X_train,Y_train)
+
+
+# In[21]:
+
+
+model.score(X_test,Y_test)
+
+
+# In[22]:
+
+
+model.predict(X_test)
+
+
+# In[23]:
+
+
+X_test
+
+
+# In[39]:
+
+
+print("Insurance haven't age is: below 34",model.predict([[33]]))
+print("Insurance have age is: 34+ age",model.predict([[34]]))
+
+
+# In[42]:
+
+
+model.predict_proba(X_test)
+
+
+# # HR Analytics
+
+# In[45]:
+
+
+hrdf=pd.read_csv("HR_comma_sep.csv")
+hrdf.head()
+
+
+# In[46]:
+
+
+print("The total employess : "+str(len(hrdf.index)))
+
+
+# In[4]:
+
+
+sns.countplot(x='left',hue='Department',data=hrdf)
+
+
+# In[5]:
+
+
+sns.countplot(x='left',hue='salary',data=hrdf)
+
+
+# In[6]:
+
+
+sns.countplot(x='left',hue='promotion_last_5years',data=hrdf)
+
+
+# In[7]:
+
+
+hrdf['time_spend_company'].plot.hist()
+
+
+# In[8]:
+
+
+hrdf['number_project'].plot.hist()
+
+
+# In[41]:
+
+
+Dept=pd.get_dummies(hrdf['Department'])
+Dept.head()
+
+
+# In[42]:
+
+
+salary=pd.get_dummies(hrdf['salary'])
+salary.head()
+
+
+# In[47]:
+
+
+hrdf=pd.concat([hrdf,Dept,salary],axis=1)
+hrdf.head()
+
+
+# In[50]:
+
+
+hrdf.drop(['Department','salary'],axis=1)
+
+
+# In[61]:
+
+
+hrdf.info()
+
+
+# In[51]:
+
+
+hrdf.columns
+
+
+# In[57]:
+
+
+X=hrdf.drop(['left','low'],axis=1)
+y=hrdf['left']
+
+
+# In[58]:
+
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,Y_train,Y_test=train_test_split(X,y,test_size=0.2,random_state=10)
+
+
+# In[59]:
+
+
+from sklearn.linear_model import LogisticRegression
+model=LogisticRegression()
+
+
+# In[60]:
+
+
+model.fit(X_train,Y_train)
