@@ -1,0 +1,557 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import linear_model
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[30]:
+
+
+df=pd.read_csv('goldprice.csv')
+df.head(2)
+
+
+# In[31]:
+
+
+plt.scatter(df['year'],df['Rupees'],color='r',marker='*')
+plt.show()
+
+
+# In[69]:
+
+
+'''india_df={
+    'area':[2600,3000,3200,3600,4000],
+    'price':[550000,565000,610000,680000,725000]
+}
+india_df
+df=pd.DataFrame(india_df)
+pd.('area_price.csv')'''
+
+
+# # AREA PRICE
+
+# In[100]:
+
+
+df=pd.read_csv('area_price.csv')
+df
+
+
+# In[104]:
+
+
+df.astype('int32')
+
+
+# In[105]:
+
+
+plt.scatter(df['area'],df['price'],color='r',marker='*')
+plt.xlabel('area(sqr ft)')
+plt.ylabel('price(us$)')
+plt.show()
+
+
+# In[106]:
+
+
+reg=linear_model.LinearRegression(n_jobs=1)
+reg.fit(df[['area']],df.price)
+
+
+# In[111]:
+
+
+reg.predict([[3300]])
+
+
+# In[143]:
+
+
+plt.xlabel('area(sqr ft)')
+plt.ylabel('price(us$)')
+plt.scatter(df['area'],df['price'],color='r',marker='*')
+plt.plot(df.area,reg.predict(df[['area']]),color='b')
+plt.show()
+
+
+# In[ ]:
+
+
+plt.scatter(df['area'],df['price'],color='r',marker='*')
+plt.xlabel('area(sqr ft)')
+plt.ylabel('price(us$)')
+plt.show()
+
+
+# In[110]:
+
+
+reg.coef_
+
+
+# In[75]:
+
+
+reg.intercept_
+
+
+# In[76]:
+
+
+#y=mx+b
+y=(reg.coef_*3300)+reg.intercept_
+print(y)
+z=135.78767123*3300+180616.43835616
+print(z)
+
+
+# In[ ]:
+
+
+
+
+
+# In[135]:
+
+
+
+d=pd.read_csv('area.csv')
+
+
+# In[137]:
+
+
+d['price']=reg.predict(d)
+d
+
+
+# # CANADA PER CAPTIAL INCOME
+# y=mx+b
+# y=dependent value
+# mx+b=independent value
+# #b=intercept
+# #m=slope value(co-effcient)
+
+# In[185]:
+
+
+
+df1=pd.read_csv('canada_per_capita_income.csv')
+df1.head()
+
+
+# In[148]:
+
+
+plt.scatter(df1['year'],df1['per_capita_income'],color='r')
+plt.xlabel('YEAR')
+plt.ylabel('capital_income')
+plt.show()
+
+
+# In[149]:
+
+
+reg=linear_model.LinearRegression()
+reg.fit(df1[['year']],df1.per_capita_income)
+
+
+# In[157]:
+
+
+reg.predict([[2016]])
+
+
+# In[160]:
+
+
+plt.xlabel('Year')
+plt.ylabel('capital_per_income)')
+plt.scatter(df1['year'],df1['per_capita_income'],color='r')
+plt.plot(df1.year,reg.predict(df1[['year']]),color='b')
+plt.grid()
+plt.show()
+
+
+# In[173]:
+
+
+#Append new value in the dataframe
+
+#df1.append({'year':'2017','per_capita_income':reg.predict([[2017]])},ignore_index=True)
+
+
+# In[188]:
+
+
+df1['year']=range(2017,2064)
+d=reg.predict(df1[['year']])
+df1['per_capita_income']=d
+df1
+
+
+# # HOME PRICE 
+# y=m1*x+m2*y+m3*z+b   
+# #b=intercept
+# #m=slope value(co-effcient)
+
+# In[34]:
+
+
+df2=pd.read_csv('homeprice.csv')
+df2
+
+
+# In[35]:
+
+
+#df2.interpolate() it gives linear value of the table 3.5
+df2=df2.fillna(method='bfill')
+df2
+
+
+# In[9]:
+
+
+reg=linear_model.LinearRegression()
+reg.fit(df2[['area','bedrooms','age']],df2.price)
+
+
+# In[36]:
+
+
+print(reg.coef_)
+print(reg.intercept_)
+reg.predict([[3000,3,40]])
+
+
+# In[37]:
+
+
+reg.score(df2[['area','bedrooms','age']],df2.price)
+
+
+# In[38]:
+
+
+df2['bedrooms']=df2['bedrooms'].astype('int32')
+
+
+# In[30]:
+
+
+#plt.scatter(df2.area+df2.bedrooms+df2.age,df2.price,color='r')
+#plt.plot(df2[['area','bedrooms','age']],reg.predict(df2[['area','bedrooms','age']]))
+#plt.xlabel('AREA BEDROOMS AGE')
+#plt.ylabel('PRICE')
+#plt.show()
+
+
+# In[39]:
+
+
+plt.xlabel('Price')
+plt.ylabel('AREA_BEDROOMS_AGE)')
+plt.scatter(df2.area+df2.bedrooms+df2.age,df2['price'],color='r')
+plt.plot(df2.area+df2.bedrooms+df2.age,reg.predict(df2[['area','bedrooms','age']]),color='b')
+plt.grid()
+plt.show()
+
+
+# In[40]:
+
+
+#137.25*3000+-26025*3+-6825*40+383724.9999999998   y=m1*x+m2*y+m3*z+b   
+#b=intercept
+#m=slope value(co-effcient)
+
+
+# In[41]:
+
+
+reg.predict([[2500,4,5]])
+
+
+# # HIRING EMPLOYESS
+# Mulptiple Variable linear regression
+# y=m1*x1+m2*x2+m3*x3+b
+# b=intercept
+# m=coeffiecient
+# x=size
+
+# In[124]:
+
+
+df3=pd.read_csv('hiring.csv')
+df3
+
+
+# In[125]:
+
+
+#pip install word2number
+from word2number import w2n
+#df.experience=df.experience.map(lambda x:w2n.word_to_num(x))
+#df['experience']=df['experience'].apply(w2n.word_to_num)
+#df['experience']=df['experience'].fillna('zero')
+w2n={'zero':0,'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10,'eleven':11,'tweleve':12}
+df3=df3.replace({'experience':w2n})
+#df3.fillna(0)
+
+
+# In[126]:
+
+
+df3
+
+
+# In[127]:
+
+
+df3=df3.interpolate()
+
+
+# In[128]:
+
+
+df3
+
+
+# In[129]:
+
+
+df3=df3.fillna(df3['experience'].median())
+#df3=df3.rename({'test_score(out of 10)':'test_score'},axis=1)
+
+
+# In[130]:
+
+
+df3
+
+
+# In[131]:
+
+
+reg=linear_model.LinearRegression()
+reg.fit(df3[['experience','test_score(out of 10)','interview_score(out of 10)']],df3.salary)
+
+
+# In[137]:
+
+
+reg.predict([[10,7,7]])
+
+
+# In[138]:
+
+
+reg.predict([[2,9,6]])
+
+
+# In[148]:
+
+
+reg.score(df3[['experience','test_score(out of 10)','interview_score(out of 10)']],df3.salary)
+
+
+# In[149]:
+
+
+df3
+
+
+# In[150]:
+
+
+
+plt.scatter(reg.predict(df3[['experience','test_score(out of 10)','interview_score(out of 10)']]),df3['salary'],color='r')
+plt.xlabel('Strength')
+plt.ylabel('Salary Expectation')
+plt.show()
+
+
+# In[151]:
+
+
+plt.xlabel('Strength')
+plt.ylabel('Salary Expectation')
+plt.scatter(df3['experience']+df3['test_score(out of 10)']+df3['interview_score(out of 10)'],df3['salary'],color='r')
+plt.plot(df3['experience']+df3['test_score(out of 10)']+df3['interview_score(out of 10)'],reg.predict(df3[['experience','test_score(out of 10)','interview_score(out of 10)']]),color='b')
+plt.grid()
+plt.show()
+
+
+# In[152]:
+
+
+#X=df3.iloc[:,:-1].values.astype('int32')
+#Y=df3.iloc[:,3].values.astype('int32')
+
+
+# # train_test_split
+
+# In[153]:
+
+
+df2=pd.read_csv('homeprice.csv')
+df2
+
+
+# In[154]:
+
+
+#df2.interpolate() it gives linear value of the table 3.5
+df2=df2.fillna(method='bfill')
+df2
+
+
+# In[50]:
+
+
+plt.scatter(df2.area,df2.price)
+
+
+# In[52]:
+
+
+plt.scatter(df2.age,df2.price)
+
+
+# In[53]:
+
+
+plt.scatter(df2.bedrooms,df2.price)
+
+
+# In[54]:
+
+
+X=df2[['area','age','bedrooms']]
+Y=df2['price']
+
+
+# In[58]:
+
+
+display(X) 
+display(Y)
+
+
+# In[69]:
+
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,Y_train,Y_test= train_test_split(X,Y,test_size=0.2,random_state=3)
+
+
+# In[70]:
+
+
+X_train
+
+
+# In[71]:
+
+
+len(X_train)
+
+
+# In[72]:
+
+
+from sklearn.linear_model import LinearRegression
+mlr=LinearRegression()
+mlr.fit(X_train,Y_train)
+
+
+# In[73]:
+
+
+print(f"intercept={mlr.intercept_}")
+print(f'Coefficient={mlr.coef_}')
+
+
+# In[82]:
+
+
+mlr.predict(X_test)
+
+
+# In[83]:
+
+
+Y_test
+
+
+# In[84]:
+
+
+mlr.score(X_test,Y_test)
+
+
+# In[81]:
+
+
+df2=pd.DataFrame(df2=Y_test,columns=['Y_test'])
+df2['y_predict'] =y_predict
+df2
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[15]:
+
+
+#Read Dataset
+crime2001_2012=r'C:\Users\ELCOT\Documents\Crime_Data_India\2001_2012_District_wise_crimes_committed_IPC.csv'
+crime2013=r'C:\Users\ELCOT\Documents\Crime_Data_India\2013_District_wise_crimes_committed_IPC.csv'
+crime1=pd.read_csv(crime2001_2012)
+crime2=pd.read_csv(crime2013)
+
+
+# In[16]:
+
+
+#concat the 2001_2013 year dataset in csv file
+crime_in_india=pd.concat([crime1,crime2],sort=False)
+crime_in_india
+
+
+# In[17]:
+
+
+#Rename the column name in the dataset
+crime_in_india.rename(columns={'STATE/UT':'STATE'}, inplace=True)
+
+
+# In[18]:
+
+
+#shape of the dataset
+crime_in_india.shape
+
+
+# In[23]:
+
+
+#in which state most of the criminal records found...
+for STATE in crime_in_india:
+    if STATE == 'TAMIL NADU'
+#dict=crime_in_india.loc[crime_in_india['STATE'] == 'Tamil Nadu'
+plt.plot(crime_in_india[STATE])
+plt.show()
